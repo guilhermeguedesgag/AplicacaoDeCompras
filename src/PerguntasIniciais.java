@@ -17,7 +17,7 @@ public class PerguntasIniciais {
             limiteDoCartao = scanner1.nextDouble();
             System.out.println("Você inseriu o limite R$" + decimalFormat.format(limiteDoCartao)+ " reais");
             System.out.println();
-            scanner1.nextLine();
+
 
             PerguntasDeRetorno perguntasDeRetorno = new PerguntasDeRetorno();
             perguntasDeRetorno.perguntasDeRetorno();

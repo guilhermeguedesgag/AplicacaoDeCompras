@@ -1,5 +1,6 @@
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -23,61 +24,72 @@ public class  PerguntasDeRetorno {
 
 
                 DecimalFormat decimalFormat = new DecimalFormat("###,###,###,###.00");
-                System.out.println("Digite o valor da compra:");
-                double valorDaCompra = scanner1.nextDouble();
+
+                try {
+                        System.out.println("Digite o valor da compra:");
+                        double valorDaCompra = scanner1.nextDouble();
 
 
-                PerguntasIniciais perguntasIniciais = new PerguntasIniciais();
+                        PerguntasIniciais perguntasIniciais = new PerguntasIniciais();
 
 
+                        if (perguntasIniciais.getLimiteDoCartao() >= valorDaCompra && indices.size() > 0) {
+                                int totalDosValoresAdicionados = 0; // Inicializa o total dos valores
+                                boolean saldoSuficiente = true; // Inicializa a variável de saldo suficiente como verdadeira
 
-                if (perguntasIniciais.getLimiteDoCartao() >= valorDaCompra && indices.size() > 0) {
-                        int totalDosValoresAdicionados = 0; // Inicializa o total dos valores
-                        boolean saldoSuficiente = true; // Inicializa a variável de saldo suficiente como verdadeira
+                                for (int itensDesteFor : indices) {
+                                        double value = valorDasCompras.get(itensDesteFor);
+                                        totalDosValoresAdicionados += value;
 
-                        for (int itensDesteFor : indices) {
-                                double value = valorDasCompras.get(itensDesteFor);
-                                totalDosValoresAdicionados += value;
-
-                                if (perguntasIniciais.getLimiteDoCartao() < totalDosValoresAdicionados + valorDaCompra) {
-                                        saldoSuficiente = false;
-                                        break; // Se o limite for excedido, interrompe o loop
+                                        if (perguntasIniciais.getLimiteDoCartao() < totalDosValoresAdicionados + valorDaCompra) {
+                                                saldoSuficiente = false;
+                                                break; // Se o limite for excedido, interrompe o loop
+                                        }
                                 }
-                        }
 
-                        if (saldoSuficiente) {
+                                if (saldoSuficiente) {
+                                        descricaoDasCompras.add(descricaoDaCompra);
+                                        valorDasCompras.add(valorDaCompra);
+                                        indices.add(descricaoDasCompras.size() - 1);
+                                        System.out.println("Compra realizada!");
+                                        System.out.println("O valor desta compra foi de R$" +
+                                                decimalFormat.format(valorDaCompra) + " reais.");
+                                } else {
+
+                                        System.out.println("Compra não adicionada, saldo insuficiente.");
+                                }
+
+                        } else if (perguntasIniciais.getLimiteDoCartao() >= valorDaCompra) {
+
                                 descricaoDasCompras.add(descricaoDaCompra);
                                 valorDasCompras.add(valorDaCompra);
                                 indices.add(descricaoDasCompras.size() - 1);
+                                // aqui ele adicionou um indice e o -1 seria o limite desse indice
+                                // colocamos o -1 para o tamanho dele nunca zerar
+
+
                                 System.out.println("Compra realizada!");
                                 System.out.println("O valor desta compra foi de R$" +
-                                        decimalFormat.format(valorDaCompra)+ " reais.");
+                                        decimalFormat.format(valorDaCompra) + " reais.");
+                                System.out.println();
                         } else {
-
                                 System.out.println("Compra não adicionada, saldo insuficiente.");
+
+                                System.out.println();
+
                         }
 
-                } else if (perguntasIniciais.getLimiteDoCartao()>= valorDaCompra ) {
-
-                        descricaoDasCompras.add(descricaoDaCompra);
-                        valorDasCompras.add(valorDaCompra);
-                        indices.add(descricaoDasCompras.size() - 1);
-                        // aqui ele adicionou um indice e o -1 seria o limite desse indice
-                        // colocamos o -1 para o tamanho dele nunca zerar
-
-
-                        System.out.println("Compra realizada!");
-                        System.out.println("O valor desta compra foi de R$" +
-                                decimalFormat.format(valorDaCompra)+ " reais.");
+                } catch (InputMismatchException e) {
+                        System.out.println("Ops...digite uma informação numérica.");
                         System.out.println();
-                } else {
-                        System.out.println("Compra não adicionada, saldo insuficiente.");
-
                         System.out.println();
 
+                        perguntasDeRetorno();
                 }
 
                 PerguntaFinal perguntaFinal = new PerguntaFinal();
+                System.out.println();
+                System.out.println();
                 perguntaFinal.perguntaFinal();// pergunta final tem que ser aqui, senão ele não irá adicionar no Array
 
 
